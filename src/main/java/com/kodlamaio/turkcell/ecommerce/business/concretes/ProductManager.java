@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class ProductManager implements ProductService {
 
-    ProductRepository repository;
+    private final ProductRepository repository;
 
     @Autowired
     public ProductManager(ProductRepository repository) {
@@ -30,20 +30,21 @@ public class ProductManager implements ProductService {
     }
 
     @Override
-    public void add(Product p) {
-        repository.add(p);
+    public Product add(Product p) {
+        validateProduct(p);
+        return repository.add(p);
     }
 
     @Override
-    public boolean delete(int id) {
+    public void delete(int id) {
         repository.delete(id);
-        return true;
     }
 
     @Override
-    public boolean update(Product p) {
-        repository.update(p);
-        return true;
+    public Product update(int id, Product p) {
+        validateProduct(p);
+        return repository.update(id,p);
+
     }
 
     @Override
@@ -51,4 +52,28 @@ public class ProductManager implements ProductService {
         return repository.getById(id);
     }
 
+
+    private  void validateProduct(Product p) {
+        checkIfPriceValid(p);
+        checkIfQuantityValid(p);
+        checkIfDescriptionValid(p);
+    }
+
+    private  void checkIfDescriptionValid(Product p) {
+        if (p.getDescription().length() < 10 || p.getDescription().length() > 50){
+            throw new IllegalArgumentException("Ürün açıklaması 10'dan küçük veya 50 karakterden büyük olmamalı.");
+        }
+    }
+
+    private  void checkIfQuantityValid(Product p) {
+        if (p.getQuantity() < 0){
+            throw new IllegalArgumentException("Ürün miktarı sıfırdan küçük olamaz.");
+        }
+    }
+
+    private  void checkIfPriceValid(Product p) {
+        if(p.getPrice() <= 0){
+            throw new IllegalArgumentException("Fiyat sıfırdan küçük olamaz.");
+        }
+    }
 }

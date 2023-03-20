@@ -29,18 +29,19 @@ public class InMemoryProductRepository implements ProductRepository {
     }
 
     @Override
-    public void add(Product p) {
+    public Product add(Product p) {
         products.add(p);
+        return p;
     }
 
     @Override
-    public boolean delete(int id) {
+    public void delete(int id) {
         Product p = this.getById(id);
-        return products.remove(p);
+        products.remove(p);
     }
 
     @Override
-    public boolean update(Product p) {
+    public Product update(int id, Product p) {
 
         Product updateProduct = this.getById(p.getId());
         if(updateProduct != null) {
@@ -51,9 +52,9 @@ public class InMemoryProductRepository implements ProductRepository {
             updateProduct.setId(p.getId());
             this.delete(p.getId());
             products.add(updateProduct);
-            return true;
+            return updateProduct;
         }
-        return false;
+        return null;
 
     }
 

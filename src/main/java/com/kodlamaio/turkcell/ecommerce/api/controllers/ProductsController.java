@@ -3,41 +3,56 @@ package com.kodlamaio.turkcell.ecommerce.api.controllers;
 
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.ProductService;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
-public class ProductController {
+@RequestMapping("/api/products")
+public class ProductsController {
 
-    private ProductService service;
+    private final ProductService service;
 
-    public ProductController(ProductService service) {
+
+    public ProductsController(ProductService service) {
         this.service = service;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping
     public List<Product> getAll(){
         return service.getAll();
     }
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable int id){
-        return service.delete(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id){
+        service.delete(id);
     }
 
     @PutMapping("/update")
-    public boolean update(@RequestBody Product p){
-        return service.update(p);
+    public Product update(@RequestBody Product p,int id){
+        return service.update(id,p);
     }
     @GetMapping("/{id}")
     public Product getById(@PathVariable int id){
        return service.getById(id);
     }
-    @PostMapping("/add")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void add(@RequestBody Product p){
         service.add(p);
     }
+
+
+
+
+//    @GetMapping("/")
+//    public Product getByIdParam(@RequestParam int id){
+//        return service.getById(id);
+//    }
+
+
 
 
 }
