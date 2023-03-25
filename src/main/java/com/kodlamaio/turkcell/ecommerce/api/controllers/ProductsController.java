@@ -4,6 +4,7 @@ package com.kodlamaio.turkcell.ecommerce.api.controllers;
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.ProductService;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,14 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
+@AllArgsConstructor
 public class ProductsController {
 
     private final ProductService service;
-
-
-    public ProductsController(ProductService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public List<Product> getAll(){
@@ -30,7 +27,7 @@ public class ProductsController {
         service.delete(id);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{id}")
     public Product update(@RequestBody Product p,int id){
         return service.update(id,p);
     }

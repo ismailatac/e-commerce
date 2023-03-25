@@ -3,55 +3,46 @@ package com.kodlamaio.turkcell.ecommerce.business.concretes;
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.ProductService;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ProductManager implements ProductService {
 
     private final ProductRepository repository;
-
-    @Autowired
-    public ProductManager(ProductRepository repository) {
-        this.repository = repository;
-    }
-
 
 
 
     @Override
     public List<Product> getAll() {
-        if (repository.getAll().size() == 0){
-            throw new RuntimeException("Ürün yok;");
-        }
-        return repository.getAll();
+        return repository.findAll();
     }
 
     @Override
     public Product add(Product p) {
         validateProduct(p);
-        return repository.add(p);
+        return repository.save(p);
     }
 
     @Override
     public void delete(int id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 
     @Override
     public Product update(int id, Product p) {
-        validateProduct(p);
-        return repository.update(id,p);
-
+        p.setId(id);
+        return repository.save(p);
     }
 
     @Override
     public Product getById(int id) {
-        return repository.getById(id);
+        if(!repository.existsById(id)) throw new RuntimeException("Ürün bulunamadı");
+        return repository.findById(id).orElseThrow();
     }
-
 
     private  void validateProduct(Product p) {
         checkIfPriceValid(p);
@@ -76,4 +67,5 @@ public class ProductManager implements ProductService {
             throw new IllegalArgumentException("Fiyat sıfırdan küçük olamaz.");
         }
     }
+
 }
