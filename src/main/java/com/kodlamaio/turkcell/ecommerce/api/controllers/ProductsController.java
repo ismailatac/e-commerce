@@ -1,9 +1,12 @@
 package com.kodlamaio.turkcell.ecommerce.api.controllers;
 
-
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.ProductService;
-import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
-
+import com.kodlamaio.turkcell.ecommerce.business.dto.requests.create.CreateProductRequest;
+import com.kodlamaio.turkcell.ecommerce.business.dto.requests.update.UpdateProductRequest;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateProductResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllProductsResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateProductResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +21,7 @@ public class ProductsController {
     private final ProductService service;
 
     @GetMapping
-    public List<Product> getAll(){
+    public List<GetAllProductsResponse> getAll(){
         return service.getAll();
     }
     @DeleteMapping("/{id}")
@@ -28,17 +31,17 @@ public class ProductsController {
     }
 
     @PutMapping("/{id}")
-    public Product update(@RequestBody Product p, @PathVariable int id){
-        return service.update(id,p);
+    public UpdateProductResponse update(@RequestBody UpdateProductRequest product, @PathVariable int id){
+        return service.update(id,product);
     }
     @GetMapping("/{id}")
-    public Product getById(@PathVariable int id){
+    public GetProductResponse getById(@PathVariable int id){
        return service.getById(id);
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void add(@RequestBody Product p){
-        service.add(p);
+    public CreateProductResponse add(@RequestBody CreateProductRequest product){
+        return service.add(product);
     }
 
 

@@ -1,9 +1,16 @@
 package com.kodlamaio.turkcell.ecommerce.business.concretes;
 
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.ProductService;
+import com.kodlamaio.turkcell.ecommerce.business.dto.requests.create.CreateProductRequest;
+import com.kodlamaio.turkcell.ecommerce.business.dto.requests.update.UpdateProductRequest;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateProductResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllProductsResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateProductResponse;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,18 +20,28 @@ import java.util.List;
 public class ProductManager implements ProductService {
 
     private final ProductRepository repository;
+    private final ModelMapper modelMapper;
 
 
 
     @Override
-    public List<Product> getAll() {
-        return repository.findAll();
+    public List<GetAllProductsResponse> getAll() {
+
+        List<Product> products = repository.findAll();
+
+        List<GetAllProductsResponse> allProductResponse = products.stream()
+                .map(product -> this.modelMapper
+                        .map(products, GetAllProductsResponse.class)).toList();
+        return allProductResponse;
     }
 
     @Override
-    public Product add(Product p) {
-        validateProduct(p);
-        return repository.save(p);
+    public CreateProductResponse add(CreateProductRequest createProductRequest) {
+        Product product = this.modelMapper.map(createProductRequest,Product.class);
+        validateProduct(product);
+        repository.save(product);
+        CreateProductResponse response = this.modelMapper.map(product,CreateProductResponse.class);
+        return response;
     }
 
     @Override
@@ -33,15 +50,25 @@ public class ProductManager implements ProductService {
     }
 
     @Override
-    public Product update(int id, Product p) {
-        p.setId(id);
-        return repository.save(p);
+    public UpdateProductResponse update(int id, UpdateProductRequest updateProductRequest) {
+        Product product = this.modelMapper.map(updateProductRequest,Product.class);
+        validateProduct(product);
+        product.setId(id);
+        repository.save(product);
+        UpdateProductResponse response = this.modelMapper.map(product,UpdateProductResponse.class);
+        return response;
     }
 
     @Override
-    public Product getById(int id) {
+    public GetProductResponse getById(int id) {
+        checkIfProductExist(id);
+        Product product = repository.findById(id).orElseThrow();
+        GetProductResponse response = this.modelMapper.map(product,GetProductResponse.class);
+        return response;
+    }
+
+    private void checkIfProductExist(int id) {
         if(!repository.existsById(id)) throw new RuntimeException("Ürün bulunamadı");
-        return repository.findById(id).orElseThrow();
     }
 
     private  void validateProduct(Product p) {
