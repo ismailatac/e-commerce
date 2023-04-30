@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface SaleService {
 
-    List<GetAllSalesResponse> getAll(boolean isActive);
+    List<GetAllSalesResponse> getAll();
     CreateSaleResponse add(CreateSaleRequest request);
     void delete(int id);
     UpdateSaleResponse update(int id, UpdateSaleRequest request);

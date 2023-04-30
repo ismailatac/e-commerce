@@ -3,7 +3,6 @@ package com.kodlamaio.turkcell.ecommerce.business.concretes;
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.PaymentService;
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.ProductService;
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.SaleService;
-import com.kodlamaio.turkcell.ecommerce.business.dto.requests.create.CreatePaymentRequest;
 import com.kodlamaio.turkcell.ecommerce.business.dto.requests.create.CreateSaleRequest;
 import com.kodlamaio.turkcell.ecommerce.business.dto.requests.update.UpdateSaleRequest;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateSaleResponse;
@@ -37,7 +36,7 @@ public class SaleManager implements SaleService {
 
 
     @Override
-    public List<GetAllSalesResponse> getAll(boolean isActive) {
+    public List<GetAllSalesResponse> getAll() {
         List<Sale> sales = repository.findAll();
         List<GetAllSalesResponse> responseList = sales.stream()
                 .map(sale -> mapper
@@ -65,16 +64,11 @@ public class SaleManager implements SaleService {
         return response;
     }
 
-
-
-
     @Override
     public void delete(int id) {
         rules.checkIfSaleExists(id);
         repository.deleteById(id);
     }
-
-
 
     @Override
     public UpdateSaleResponse update(int id, UpdateSaleRequest updateSaleRequest) {
@@ -114,11 +108,7 @@ public class SaleManager implements SaleService {
         }
     }
 
-
-
-
-
-    }
+}
 
 
 
