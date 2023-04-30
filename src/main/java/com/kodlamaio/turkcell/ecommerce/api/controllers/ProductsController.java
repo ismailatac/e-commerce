@@ -7,6 +7,7 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateProd
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllProductsResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateProductResponse;
+import com.kodlamaio.turkcell.ecommerce.entities.enums.State;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class ProductsController {
     private final ProductService service;
 
     @GetMapping
-    public List<GetAllProductsResponse> getAll(){
-        return service.getAll();
+    public List<GetAllProductsResponse> getAll(@RequestParam boolean isActive){
+        return service.getAll(isActive);
     }
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -43,6 +44,11 @@ public class ProductsController {
     public CreateProductResponse add(@RequestBody CreateProductRequest product){
         return service.add(product);
     }
+    @PutMapping("/changeState/{id}")
+    public void changeProductState(@PathVariable int id, @RequestParam State state){
+        service.changeProductState(id,state);
+    }
+
 
 
 

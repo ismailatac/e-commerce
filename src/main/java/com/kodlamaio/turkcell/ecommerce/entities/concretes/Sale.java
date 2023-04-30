@@ -1,32 +1,28 @@
 package com.kodlamaio.turkcell.ecommerce.entities.concretes;
 
-import com.kodlamaio.turkcell.ecommerce.entities.enums.State;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "products")
-public class Product {
+@Table(name = "sales")
+public class Sale {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private int id;
-    private String name;
-    private int quantity;
-    private double price;
-    private String description;
-    @Enumerated(EnumType.STRING)
-    private State isActive;
-
-
-
-
+    private double totalPrice;
+    private LocalDateTime date;
+    private List<Product> products;
+    private String cardHolder;
 
 }

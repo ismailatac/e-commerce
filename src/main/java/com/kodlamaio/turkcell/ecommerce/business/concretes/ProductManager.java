@@ -8,11 +8,14 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllProduct
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateProductResponse;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
+import com.kodlamaio.turkcell.ecommerce.entities.enums.State;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.ProductRepository;
+import com.kodlamaio.turkcell.ecommerce.rules.ProductBusinessRules;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,14 +24,13 @@ public class ProductManager implements ProductService {
 
     private final ProductRepository repository;
     private final ModelMapper modelMapper;
+    private final ProductBusinessRules rules;
 
 
 
     @Override
-    public List<GetAllProductsResponse> getAll() {
-
-        List<Product> products = repository.findAll();
-
+    public List<GetAllProductsResponse> getAll(boolean isActive) {
+        List<Product> products = rules.filterProductsByisActive(isActive);
         List<GetAllProductsResponse> allProductResponse = products.stream()
                 .map(product -> this.modelMapper
                         .map(products, GetAllProductsResponse.class)).toList();
@@ -38,7 +40,8 @@ public class ProductManager implements ProductService {
     @Override
     public CreateProductResponse add(CreateProductRequest createProductRequest) {
         Product product = this.modelMapper.map(createProductRequest,Product.class);
-        validateProduct(product);
+        rules.validateProduct(product);
+        product.setIsActive(State.ACTIVE);
         repository.save(product);
         CreateProductResponse response = this.modelMapper.map(product,CreateProductResponse.class);
         return response;
@@ -52,7 +55,7 @@ public class ProductManager implements ProductService {
     @Override
     public UpdateProductResponse update(int id, UpdateProductRequest updateProductRequest) {
         Product product = this.modelMapper.map(updateProductRequest,Product.class);
-        validateProduct(product);
+        rules.validateProduct(product);
         product.setId(id);
         repository.save(product);
         UpdateProductResponse response = this.modelMapper.map(product,UpdateProductResponse.class);
@@ -61,38 +64,19 @@ public class ProductManager implements ProductService {
 
     @Override
     public GetProductResponse getById(int id) {
-        checkIfProductExist(id);
+        rules.checkIfProductExist(id);
         Product product = repository.findById(id).orElseThrow();
         GetProductResponse response = this.modelMapper.map(product,GetProductResponse.class);
         return response;
     }
 
-    private void checkIfProductExist(int id) {
-        if(!repository.existsById(id)) throw new RuntimeException("Ürün bulunamadı");
+    @Override
+    public void changeProductState(int id, State state) {
+        rules.checkIfProductExist(id);
+        Product product = repository.findById(id).orElseThrow();
+        product.setIsActive(state);
+        repository.save(product);
     }
 
-    private  void validateProduct(Product p) {
-        checkIfPriceValid(p);
-        checkIfQuantityValid(p);
-        checkIfDescriptionValid(p);
-    }
-
-    private  void checkIfDescriptionValid(Product p) {
-        if (p.getDescription().length() < 10 || p.getDescription().length() > 50){
-            throw new IllegalArgumentException("Ürün açıklaması 10'dan küçük veya 50 karakterden büyük olmamalı.");
-        }
-    }
-
-    private  void checkIfQuantityValid(Product p) {
-        if (p.getQuantity() < 0){
-            throw new IllegalArgumentException("Ürün miktarı sıfırdan küçük olamaz.");
-        }
-    }
-
-    private  void checkIfPriceValid(Product p) {
-        if(p.getPrice() <= 0){
-            throw new IllegalArgumentException("Fiyat sıfırdan küçük olamaz.");
-        }
-    }
 
 }

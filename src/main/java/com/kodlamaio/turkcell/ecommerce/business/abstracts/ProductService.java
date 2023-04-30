@@ -6,14 +6,17 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateProd
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllProductsResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateProductResponse;
+import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
+import com.kodlamaio.turkcell.ecommerce.entities.enums.State;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<GetAllProductsResponse> getAll();
-    CreateProductResponse add(CreateProductRequest p);
+    List<GetAllProductsResponse> getAll(boolean isActive);
+    CreateProductResponse add(CreateProductRequest request);
     void delete(int id);
-    UpdateProductResponse update(int id, UpdateProductRequest updateProductRequest);
+    UpdateProductResponse update(int id, UpdateProductRequest request);
     GetProductResponse getById(int id);
+    void changeProductState(int id, State state);
 }
