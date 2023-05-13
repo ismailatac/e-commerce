@@ -22,43 +22,36 @@ public class ProductsController {
     private final ProductService service;
 
     @GetMapping
-    public List<GetAllProductsResponse> getAll(@RequestParam boolean isActive){
+    public List<GetAllProductsResponse> getAll(@RequestParam boolean isActive) {
         return service.getAll(isActive);
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id){
+    public void delete(@PathVariable int id) {
         service.delete(id);
     }
 
     @PutMapping("/{id}")
-    public UpdateProductResponse update(@RequestBody UpdateProductRequest product, @PathVariable int id){
-        return service.update(id,product);
+    public UpdateProductResponse update(@RequestBody UpdateProductRequest product, @PathVariable int id) {
+        return service.update(id, product);
     }
+
     @GetMapping("/{id}")
-    public GetProductResponse getById(@PathVariable int id){
-       return service.getById(id);
+    public GetProductResponse getById(@PathVariable int id) {
+        return service.getById(id);
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateProductResponse add(@RequestBody CreateProductRequest product){
+    public CreateProductResponse add(@RequestBody CreateProductRequest product) {
         return service.add(product);
     }
+
     @PutMapping("/changeState/{id}")
-    public void changeProductState(@PathVariable int id, @RequestParam State state){
-        service.changeProductState(id,state);
+    public void changeProductState(@PathVariable int id, @RequestParam State state) {
+        service.changeProductState(id, state);
     }
-
-
-
-
-
-//    @GetMapping("/")
-//    public Product getByIdParam(@RequestParam int id){
-//        return service.getById(id);
-//    }
-
-
 
 
 }

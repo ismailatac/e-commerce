@@ -11,9 +11,5 @@ public class ECommerceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ECommerceApplication.class, args);
 	}
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
 
 }

@@ -7,7 +7,6 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateSale
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllSalesResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetSaleResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateSaleResponse;
-import com.kodlamaio.turkcell.ecommerce.entities.enums.State;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

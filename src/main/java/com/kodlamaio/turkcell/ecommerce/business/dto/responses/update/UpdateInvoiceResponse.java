@@ -1,4 +1,4 @@
-package com.kodlamaio.turkcell.ecommerce.business.dto.responses.create;
+package com.kodlamaio.turkcell.ecommerce.business.dto.responses.update;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateSaleResponse {
+public class UpdateInvoiceResponse {
     private int id;
+    private String cardHolder;
     private double totalPrice;
-    private LocalDateTime date;
+    private String productName;
     private int quantityToBeSold;
-
+    private LocalDateTime date;
 }

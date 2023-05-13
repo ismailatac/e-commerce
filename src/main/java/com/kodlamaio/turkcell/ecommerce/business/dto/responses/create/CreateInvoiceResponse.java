@@ -11,10 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CreateSaleResponse {
+public class CreateInvoiceResponse {
     private int id;
+    private String cardHolder;
     private double totalPrice;
-    private LocalDateTime date;
+    private String productName;
     private int quantityToBeSold;
-
+    private LocalDateTime date;
 }

@@ -1,10 +1,12 @@
-package com.kodlamaio.turkcell.ecommerce.rules;
+package com.kodlamaio.turkcell.ecommerce.business.rules;
 
 import com.kodlamaio.turkcell.ecommerce.common.dto.CreateSalePaymentRequest;
 import com.kodlamaio.turkcell.ecommerce.core.exceptions.BusinessException;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.PaymentRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
+@Service
 @AllArgsConstructor
 public class PaymentBusinessRules {
     private final PaymentRepository repository;

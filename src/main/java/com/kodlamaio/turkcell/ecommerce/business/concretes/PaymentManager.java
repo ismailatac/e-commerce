@@ -1,4 +1,4 @@
-package kodlama.io.rentacar.business.concretes;
+package com.kodlamaio.turkcell.ecommerce.business.concretes;
 
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.PaymentService;
 import com.kodlamaio.turkcell.ecommerce.business.abstracts.PosService;
@@ -8,11 +8,10 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreatePaym
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllPaymentsResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetPaymentResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdatePaymentResponse;
+import com.kodlamaio.turkcell.ecommerce.business.rules.PaymentBusinessRules;
 import com.kodlamaio.turkcell.ecommerce.common.dto.CreateSalePaymentRequest;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Payment;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.PaymentRepository;
-
-import com.kodlamaio.turkcell.ecommerce.rules.PaymentBusinessRules;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class PaymentManager implements PaymentService {
     private final PaymentRepository repository;
     private final ModelMapper mapper;
     private final PosService posService;
-    private PaymentBusinessRules rules;
+    private final PaymentBusinessRules rules;
 
     @Override
     public List<GetAllPaymentsResponse> getAll() {
@@ -80,8 +79,6 @@ public class PaymentManager implements PaymentService {
         payment.setBalance(payment.getBalance() - request.getPrice());
         repository.save(payment);
     }
-
-
 
 
 }

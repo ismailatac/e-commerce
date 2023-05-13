@@ -1,6 +1,6 @@
 package com.kodlamaio.turkcell.ecommerce.common.dto;
 
-import com.kodlamaio.turkcell.ecommerce.business.dto.requests.PaymentRequest;
+import com.kodlamaio.turkcell.ecommerce.business.dto.PaymentRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

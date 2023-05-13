@@ -7,22 +7,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 @Entity
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "sales")
-public class Sale {
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "invoices")
+public class Invoice {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String cardHolder;
     private double totalPrice;
-    private LocalDateTime date;
+    private String productName;
     private int quantityToBeSold;
-    @OneToOne(mappedBy = "sale")
-    private Product product;
+    private LocalDateTime date;
 
 }

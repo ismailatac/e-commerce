@@ -19,4 +19,5 @@ public interface ProductService {
     UpdateProductResponse update(int id, UpdateProductRequest request);
     GetProductResponse getById(int id);
     void changeProductState(int id, State state);
+    Product getByProductName(String productName);
 }
