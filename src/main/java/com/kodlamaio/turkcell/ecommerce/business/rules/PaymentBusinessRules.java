@@ -1,5 +1,6 @@
 package com.kodlamaio.turkcell.ecommerce.business.rules;
 
+import com.kodlamaio.turkcell.ecommerce.common.constants.Messages;
 import com.kodlamaio.turkcell.ecommerce.common.dto.CreateSalePaymentRequest;
 import com.kodlamaio.turkcell.ecommerce.core.exceptions.BusinessException;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.PaymentRepository;
@@ -19,25 +20,25 @@ public class PaymentBusinessRules {
                 request.getCardExpirationMonth(),
                 request.getCardCvv()
         )) {
-            throw new BusinessException("Kart bilgileriniz hatalı!");
+            throw new BusinessException(Messages.Payment.Incorrect);
         }
     }
 
     public void checkIfCardExists(String cardNumber) {
         if (repository.existsByCardNumber(cardNumber)) {
-            throw new BusinessException("Kart numarası zaten kayıtlı!");
+            throw new BusinessException(Messages.Payment.AlreadyExists);
         }
     }
 
     public void checkIfBalanceIdEnough(double balance, double price) {
         if (balance < price) {
-            throw new BusinessException("Yetersiz bakiye!");
+            throw new BusinessException(Messages.Payment.NotEnoughBalance);
         }
     }
 
     public void checkIfPaymentNotExists(int id) {
         if (!repository.existsById(id)) {
-            throw new BusinessException("Ödeme bilgisi bulunamadı!");
+            throw new BusinessException(Messages.Payment.NotFound);
         }
     }
 }

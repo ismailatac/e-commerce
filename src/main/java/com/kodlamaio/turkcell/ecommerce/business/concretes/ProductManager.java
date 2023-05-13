@@ -28,7 +28,7 @@ public class ProductManager implements ProductService {
 
     @Override
     public List<GetAllProductsResponse> getAll(boolean isActive) {
-        List<Product> products = rules.filterProductsByisActive(isActive);
+        List<Product> products = filterProductsByisActive(isActive);
         List<GetAllProductsResponse> allProductResponse = products.stream()
                 .map(product -> this.modelMapper
                         .map(products, GetAllProductsResponse.class)).toList();
@@ -79,6 +79,13 @@ public class ProductManager implements ProductService {
     @Override
     public Product getByProductName(String productName) {
         return repository.findByProductName(productName);
+    }
+
+    public List<Product> filterProductsByisActive(boolean isActive) {
+        if (isActive) {
+            return repository.findAll();
+        }
+        return repository.findAllByisActiveIsNot(false);
     }
 
 
