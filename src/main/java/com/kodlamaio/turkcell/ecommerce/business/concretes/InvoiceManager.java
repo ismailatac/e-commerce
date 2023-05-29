@@ -7,10 +7,10 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.requests.update.UpdateInvoi
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateInvoiceResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllInvoicesResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetInvoiceResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateInvoiceResponse;
 import com.kodlamaio.turkcell.ecommerce.business.rules.InvoiceBusinessRules;
 import com.kodlamaio.turkcell.ecommerce.entities.concretes.Invoice;
-import com.kodlamaio.turkcell.ecommerce.entities.concretes.Product;
 import com.kodlamaio.turkcell.ecommerce.repository.abstracts.InvoiceRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -73,7 +73,7 @@ public class InvoiceManager implements InvoiceService {
         repository.deleteById(id);
     }
 
-    private double getTotalPrice(Product product, int quantity) {
+    private double getTotalPrice(GetProductResponse product, int quantity) {
         return product.getPrice() * quantity;
     }
 }

@@ -15,4 +15,5 @@ public class UpdateProductRequest {
     private int quantity;
     private double price;
     private String description;
+    private State state;
 }

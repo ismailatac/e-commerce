@@ -10,6 +10,7 @@ import com.kodlamaio.turkcell.ecommerce.business.dto.requests.update.UpdateProdu
 import com.kodlamaio.turkcell.ecommerce.business.dto.requests.update.UpdateSaleRequest;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.create.CreateSaleResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetAllSalesResponse;
+import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetProductResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.get.GetSaleResponse;
 import com.kodlamaio.turkcell.ecommerce.business.dto.responses.update.UpdateSaleResponse;
 import com.kodlamaio.turkcell.ecommerce.business.rules.SaleBusinessRules;
@@ -53,14 +54,15 @@ public class SaleManager implements SaleService {
         Sale sale = mapper.map(request, Sale.class);
         sale.setDate(LocalDateTime.now());
 
+        GetProductResponse product = productService.getById(sale.getProductId());
         CreateSalePaymentRequest paymentRequest = new CreateSalePaymentRequest();
         mapper.map(request.getPaymentRequest(), paymentRequest);
-        paymentRequest.setPrice(getTotalPrice(sale.getProduct(), sale.getQuantityToBeSold()));
+        paymentRequest.setPrice(getTotalPrice(product, sale.getQuantityToBeSold()));
         paymentService.processSalePayment(paymentRequest);
 
-        sale.setTotalPrice(getTotalPrice(sale.getProduct(), sale.getQuantityToBeSold()));
+        sale.setTotalPrice(getTotalPrice(product, sale.getQuantityToBeSold()));
         repository.save(sale);
-        reduceQuantityProducts(sale.getProduct());
+        reduceQuantityProducts(product.getId());
         CreateSaleResponse response = mapper.map(sale, CreateSaleResponse.class);
 
         //TODO: sale için invoice
@@ -81,8 +83,9 @@ public class SaleManager implements SaleService {
     public UpdateSaleResponse update(int id, UpdateSaleRequest updateSaleRequest) {
         rules.checkIfSaleExists(id);
         Sale sale = mapper.map(updateSaleRequest, Sale.class);
+        GetProductResponse product = productService.getById(sale.getProductId());
         sale.setId(id);
-        sale.setTotalPrice(getTotalPrice(sale.getProduct(), sale.getQuantityToBeSold()));
+        sale.setTotalPrice(getTotalPrice(product, sale.getQuantityToBeSold()));
         repository.save(sale);
         UpdateSaleResponse response = mapper.map(sale, UpdateSaleResponse.class);
         return response;
@@ -97,29 +100,32 @@ public class SaleManager implements SaleService {
     }
 
     private void checkProductAvailabilityForSale(CreateSaleRequest request) {
-        if (!request.getProduct().getIsActive().equals(State.PASSIVE)) {
+        var product = productService.getById(request.getProductId());
+        if (product.getIsActive().equals(State.PASSIVE)) {
             throw new BusinessException("Ürün pasif");
         }
-        if (request.getProduct().getQuantity() < 0) {
+        if (product.getQuantity() < 0) {
             throw new BusinessException("Ürün stokta yok");
         }
     }
 
-    private double getTotalPrice(Product product, int quantity) {
+    private double getTotalPrice(GetProductResponse product, int quantity) {
         return product.getPrice() * quantity;
     }
 
-    private void reduceQuantityProducts(Product product) {
-        Product product1 = mapper.map(productService.getById(product.getId()), Product.class);
+    private void reduceQuantityProducts(int id) {
+        Product product1 = mapper.map(productService.getById(id), Product.class);
         product1.setQuantity(product1.getQuantity() - 1);
         productService.update(product1.getId(), mapper.map(product1, UpdateProductRequest.class));
     }
 
     private void createInvoiceRequest(CreateSaleRequest request, CreateInvoiceRequest invoiceRequest, Sale sale) {
+        var product = productService.getById(request.getProductId());
+
         invoiceRequest.setCardHolder(request.getPaymentRequest().getCardHolderName());
         invoiceRequest.setDate(sale.getDate());
-        invoiceRequest.setProductName(request.getProduct().getName());
-        invoiceRequest.setTotalPrice(getTotalPrice(request.getProduct(), sale.getQuantityToBeSold()));
+        invoiceRequest.setProductName(product.getName());
+        invoiceRequest.setTotalPrice(getTotalPrice(product, sale.getQuantityToBeSold()));
         invoiceRequest.setQuantityToBeSold(sale.getQuantityToBeSold());
 
 

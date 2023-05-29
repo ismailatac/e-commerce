@@ -24,14 +24,6 @@ public class Product {
     private String description;
     @Enumerated(EnumType.STRING)
     private State isActive;
-    @OneToOne
-    @JoinColumn(name = "sale_id")
-    private Sale sale;
-    @OneToOne
-    @JoinColumn(name = "invoice_id")
-    private Invoice invoice;
-
-
 
 
 }

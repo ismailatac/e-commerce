@@ -55,10 +55,11 @@ public class PaymentManager implements PaymentService {
     @Override
     public UpdatePaymentResponse update(int id, UpdatePaymentRequest request) {
         rules.checkIfPaymentNotExists(id);
-        Payment payment = mapper.map(request, Payment.class);
-        payment.setId(id);
-        repository.save(payment);
-        UpdatePaymentResponse response = mapper.map(payment, UpdatePaymentResponse.class);
+        var payment = this.getById(id);
+        var paymentRequest = mapper.map(payment, Payment.class);
+        paymentRequest.setBalance(request.getBalance());
+        var paymentResponse = repository.save(paymentRequest);
+        UpdatePaymentResponse response = mapper.map(paymentResponse, UpdatePaymentResponse.class);
         return response;
     }
 

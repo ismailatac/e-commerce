@@ -22,8 +22,8 @@ public class ProductsController {
     private final ProductService service;
 
     @GetMapping
-    public List<GetAllProductsResponse> getAll(@RequestParam boolean isActive) {
-        return service.getAll(isActive);
+    public List<GetAllProductsResponse> getAll(@RequestParam State showAll) {
+        return service.getAll(showAll);
     }
 
     @DeleteMapping("/{id}")

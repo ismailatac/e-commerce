@@ -16,13 +16,12 @@ import java.time.LocalDateTime;
 @Table(name = "sales")
 public class Sale {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private double totalPrice;
     private LocalDateTime date;
     private int quantityToBeSold;
-    @OneToOne(mappedBy = "sale")
-    private Product product;
+    private int productId;
 
 }

@@ -27,21 +27,21 @@ public class ProductManager implements ProductService {
 
 
     @Override
-    public List<GetAllProductsResponse> getAll(boolean isActive) {
-        List<Product> products = filterProductsByisActive(isActive);
+    public List<GetAllProductsResponse> getAll(State showAll) {
+        List<Product> products = filterProductsByisActive(showAll);
         List<GetAllProductsResponse> allProductResponse = products.stream()
-                .map(product -> this.modelMapper
-                        .map(products, GetAllProductsResponse.class)).toList();
+                .map(product -> modelMapper
+                        .map(product, GetAllProductsResponse.class)).toList();
         return allProductResponse;
     }
 
     @Override
     public CreateProductResponse add(CreateProductRequest createProductRequest) {
-        Product product = this.modelMapper.map(createProductRequest, Product.class);
+        Product product = modelMapper.map(createProductRequest, Product.class);
         rules.validateProduct(product);
         product.setIsActive(State.ACTIVE);
-        repository.save(product);
-        CreateProductResponse response = this.modelMapper.map(product, CreateProductResponse.class);
+        var productResponse = repository.save(product);
+        CreateProductResponse response = modelMapper.map(productResponse, CreateProductResponse.class);
         return response;
     }
 
@@ -52,11 +52,11 @@ public class ProductManager implements ProductService {
 
     @Override
     public UpdateProductResponse update(int id, UpdateProductRequest updateProductRequest) {
-        Product product = this.modelMapper.map(updateProductRequest, Product.class);
+        Product product = modelMapper.map(updateProductRequest, Product.class);
         rules.validateProduct(product);
         product.setId(id);
         repository.save(product);
-        UpdateProductResponse response = this.modelMapper.map(product, UpdateProductResponse.class);
+        UpdateProductResponse response = modelMapper.map(product, UpdateProductResponse.class);
         return response;
     }
 
@@ -64,7 +64,7 @@ public class ProductManager implements ProductService {
     public GetProductResponse getById(int id) {
         rules.checkIfProductExist(id);
         Product product = repository.findById(id).orElseThrow();
-        GetProductResponse response = this.modelMapper.map(product, GetProductResponse.class);
+        GetProductResponse response = modelMapper.map(product, GetProductResponse.class);
         return response;
     }
 
@@ -77,15 +77,18 @@ public class ProductManager implements ProductService {
     }
 
     @Override
-    public Product getByProductName(String productName) {
-        return repository.findByProductName(productName);
+    public GetProductResponse getByProductName(String productName) {
+        Product response = repository.findByName(productName);
+
+        return modelMapper.map(response, GetProductResponse.class);
     }
 
-    public List<Product> filterProductsByisActive(boolean isActive) {
-        if (isActive) {
+    public List<Product> filterProductsByisActive(State showAll) {
+        if (showAll.equals(State.ACTIVE)) {
             return repository.findAll();
+        } else {
+            return repository.findByIsActive(State.PASSIVE);
         }
-        return repository.findAllByisActiveIsNot(false);
     }
 
 
